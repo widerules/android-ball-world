@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello">Hello World, GameActivity!</string>
+    <string name="app_name">cocobox</string>
+    <string name="resume">恢复</string>
+    <string name="restart">重新</string>
+    <string name="quit">退出</string>
+    <string name="about">关于</string>
+    <string name="highscore">高分</string>
+</resources>
