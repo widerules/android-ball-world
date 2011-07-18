@@ -1,8 +1,15 @@
 package com.winbomb.ballworld;
 
+import android.graphics.Bitmap;
+
 import com.winbomb.ballworld.common.Vec2;
 
 public class Ball {
+
+	/** 一些预定义的小球/中等球/大球的半径大小 */
+	public static final float SMALL_BALL_RADIUS = 10f;
+	public static final float MIDDLE_BALL_RADIUS = 12f;
+	public static final float LARGE_BALL_RADIUS = 15f;
 
 	private BallWorld world;
 
@@ -33,6 +40,8 @@ public class Ball {
 	/** 是否在洞中 */
 	boolean inHole;
 
+	Bitmap texture;
+
 	/**
 	 * 构造函数
 	 */
@@ -48,6 +57,8 @@ public class Ball {
 
 		this.mass = Float.MAX_VALUE;
 		this.invMass = 0.0f;
+
+		this.texture = null;
 	}
 
 	/**
@@ -109,7 +120,7 @@ public class Ball {
 			return false;
 		}
 
-		return Vec2.distance(position, hole.getPos()) - Setting.EPSILON < 0.04;
+		return Vec2.distance(position, hole.getPos()) - Setting.EPSILON < 1.2;
 	}
 
 	public boolean isFallingHole(Hole hole) {
@@ -220,5 +231,13 @@ public class Ball {
 
 	public void setInHole(boolean inHole) {
 		this.inHole = inHole;
+	}
+
+	public Bitmap getTexture() {
+		return texture;
+	}
+
+	public void setTexture(Bitmap texture) {
+		this.texture = texture;
 	}
 }
