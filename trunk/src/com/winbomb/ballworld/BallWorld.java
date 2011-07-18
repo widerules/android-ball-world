@@ -135,7 +135,7 @@ public class BallWorld {
 					Vec2 vec = gravity.mul(1);
 					vec.addLocal(ball.getVelocity());
 
-					if (Vec2.length(vec) < 50f) {
+					if (Vec2.length(vec) < 50 * 40f) {
 						ball.clearVelocity();
 					}
 
@@ -147,8 +147,8 @@ public class BallWorld {
 					Vec2 normal = hole.getPos().sub(ball.getPosition());
 					normal.normalize();
 
-					float fx = normal.x * 980;
-					float fy = normal.y * 980;
+					float fx = normal.x * 980 * 40;
+					float fy = normal.y * 980 * 40;
 
 					ball.setForce(fx, fy);
 					break;

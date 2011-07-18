@@ -4,11 +4,11 @@ import com.winbomb.ballworld.common.Vec2;
 
 public class Hole {
 
-	public static final float SMALL_HOLE = 0.03f;
+	public static final float SMALL_HOLE = 2f;
 
-	public static final float MIDDLE_HOLE = 0.15f;
+	public static final float MIDDLE_HOLE = 6f;
 
-	public static final float LARGE_HOLE = 0.08f;
+	public static final float LARGE_HOLE = 10f;
 
 	/** 球洞的位置 */
 	private Vec2 pos;
