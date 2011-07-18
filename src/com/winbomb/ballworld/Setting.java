@@ -16,4 +16,9 @@ public interface Setting {
 	/** 从孔中能够逃离的速度阈值 */
 	public static final float ESCAPE_VELOCITY = 50f;
 
+	/** Ball World的默认宽度 */
+	public static final int WORLD_WIDTH = 320;
+
+	/** Ball World的默认高度 */
+	public static final int WORLD_HEIGHT = 480;
 }
