@@ -120,7 +120,7 @@ public class Ball {
 			return false;
 		}
 
-		return Vec2.distance(position, hole.getPos()) - Setting.EPSILON < 1.2;
+		return Vec2.distance(position, hole.getPos()) - Setting.EPSILON < 1.5;
 	}
 
 	public boolean isFallingHole(Hole hole) {
