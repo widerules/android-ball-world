@@ -85,45 +85,19 @@ public class GameActivity extends Activity {
 	}
 
 	@Override
-	public void onDestroy() {
-
-		// 将高分写入文件
-		FileOutputStream fos = null;
-		ObjectOutputStream oos = null;
-		try {
-			fos = openFileOutput(HIGH_SCORE_FILE, 0);
-			oos = new ObjectOutputStream(fos);
-
-			for (HighScore highScore : highScores) {
-				oos.writeObject(highScore);
-			}
-
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
-			closeQuietly(fos);
-			closeQuietly(oos);
-		}
-
-		super.onDestroy();
-	}
-
-	@Override
 	public void onPause() {
-
 		super.onPause();
 		this.mGameView.pause();
+
+		if (isFinishing()) {
+			writeHighScoreToFile();
+		}
 	}
 
 	@Override
 	public void onResume() {
-
 		super.onResume();
-		this.mGameView.resume();
+		resumeGame();
 	}
 
 	@Override
@@ -190,12 +164,6 @@ public class GameActivity extends Activity {
 
 		openOptionsMenu();
 		return true;
-	}
-
-	private void restartGame() {
-		if (this.mGameView != null) {
-			mGameView.restart();
-		}
 	}
 
 	private void showResult(long time) {
@@ -308,14 +276,38 @@ public class GameActivity extends Activity {
 	}
 
 	private void resumeGame() {
-		if (this.mGameView != null) {
-			mGameView.resume();
-		}
+		mGameView.resume(false);
+	}
+
+	private void restartGame() {
+		mGameView.resume(true);
 	}
 
 	private void pauseGame() {
-		if (this.mGameView != null) {
-			mGameView.pause();
+		mGameView.pause();
+	}
+
+	private void writeHighScoreToFile() {
+		// 将高分写入文件
+		FileOutputStream fos = null;
+		ObjectOutputStream oos = null;
+		try {
+			fos = openFileOutput(HIGH_SCORE_FILE, 0);
+			oos = new ObjectOutputStream(fos);
+
+			for (HighScore highScore : highScores) {
+				oos.writeObject(highScore);
+			}
+
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			closeQuietly(fos);
+			closeQuietly(oos);
 		}
 	}
 
@@ -344,7 +336,7 @@ public class GameActivity extends Activity {
 
 		@Override
 		public void onClick(DialogInterface dialog, int which) {
-			mGameView.resume();
+			resumeGame();
 		}
 	}
 
@@ -352,7 +344,7 @@ public class GameActivity extends Activity {
 
 		@Override
 		public void onClick(DialogInterface dialog, int which) {
-			mGameView.restart();
+			restartGame();
 		}
 	}
 
@@ -390,7 +382,7 @@ public class GameActivity extends Activity {
 			}
 
 			highScores[pos] = high;
-			mGameView.restart();
+			restartGame();
 		}
 	}
 
