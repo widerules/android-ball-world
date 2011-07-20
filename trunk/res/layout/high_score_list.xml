@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="fill_parent" android:layout_height="fill_parent">
-	<TextView android:text="TextView" android:id="@+id/txtNo"
-		android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
-	<TextView android:text="TextView" android:id="@+id/txtTimeCost"
-		android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
-	<TextView android:text="TextView" android:id="@+id/txtPlayer"
-		android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
-	<TextView android:text="TextView" android:id="@+id/txtDate"
+	<TextView android:text="10" android:id="@+id/txtNo"
+		android:layout_width="30dip" android:layout_height="wrap_content"></TextView>
+	<TextView android:text="999" android:id="@+id/txtTimeCost"
+		android:layout_width="50dip" android:layout_height="wrap_content"></TextView>
+	<TextView android:text="Anonymous" android:id="@+id/txtPlayer"
+		android:layout_width="100dip" android:layout_height="wrap_content"></TextView>
+	<TextView android:text="2011-07-17 13:30" android:id="@+id/txtDate"
 		android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
 </LinearLayout>
