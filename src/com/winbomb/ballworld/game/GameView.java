@@ -1,16 +1,12 @@
 package com.winbomb.ballworld.game;
 
-import java.lang.Thread.State;
 import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.Rect;
-import android.graphics.Paint.Style;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -24,14 +20,13 @@ import com.winbomb.ballworld.Setting;
 import com.winbomb.ballworld.common.Vec2;
 import com.winbomb.ballworld.input.AccHandler;
 
-public class GameView extends SurfaceView implements SurfaceHolder.Callback, Runnable {
+public class GameView extends SurfaceView implements Runnable {
 
 	private static final float DELAY = 0.002f;
 
 	private SurfaceHolder mHolder;
-	private Paint mPaint;
 	private AccHandler mAccHandler;
-	private Thread mThread = new Thread(this);
+	private Thread mThread = null;
 
 	private BallWorld world;
 	private WorldRender worldRender;
@@ -39,7 +34,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
 	private Rect dstRect;
 
 	private static final int NUMBER_OF_BALLS = 4;
-	private boolean isFrozen = false;
+	boolean running = true;
 
 	/** 游戏上次暂停时间 */
 	private long lastPause;
@@ -51,13 +46,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
 		this.setKeepScreenOn(true);
 
 		mHolder = this.getHolder();
-		mHolder.addCallback(this);
-
-		mPaint = new Paint();
-		mPaint.setAntiAlias(true);
-		mPaint.setStyle(Style.FILL);
-		mPaint.setColor(Color.RED);
-
 		mAccHandler = new AccHandler(context);
 
 		// 初始化Ball world
@@ -123,31 +111,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
 	}
 
 	@Override
-	public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void surfaceCreated(SurfaceHolder holder) {
-
-		if (mThread.getState() == State.NEW) {
-			mThread.start();
-		}
-	}
-
-	@Override
-	public void surfaceDestroyed(SurfaceHolder holder) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public void run() {
 
 		lastPause = System.currentTimeMillis();
 
-		while (true) {
+		while (running) {
 
 			Canvas canvas = mHolder.lockCanvas();
 
@@ -158,19 +126,15 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
 			float accX = -mAccHandler.getAccelX() * 98 * 40;
 			float accY = mAccHandler.getAccelY() * 98 * 40;
 
-			if (!isFrozen) {
-				world.setGravity(accX, accY);
-				world.step(DELAY);
-			}
+			world.setGravity(accX, accY);
+			world.step(DELAY);
 
 			Bitmap worldFrame = worldRender.drawWorldFrame();
 			canvas.drawBitmap(worldFrame, null, dstRect, null);
 
 			mHolder.unlockCanvasAndPost(canvas);
 
-			if (!isFrozen && world.isFinished()) {
-
-				isFrozen = true;
+			if (world.isFinished()) {
 
 				Message msg = mHandler.obtainMessage();
 
@@ -181,22 +145,32 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
 
 				mHandler.sendMessage(msg);
 				costTime = 0;
+				pause();
 			}
 		}
 	}
 
 	public void pause() {
-		isFrozen = true;
+		running = false;
 		costTime += System.currentTimeMillis() - lastPause;
+		while (true) {
+			try {
+				mThread.join();
+				break;
+			} catch (InterruptedException ex) {
+				// retry
+			}
+		}
 	}
 
-	public void resume() {
-		isFrozen = false;
+	public void resume(boolean resetBall) {
+		running = true;
 		lastPause = System.currentTimeMillis();
-	}
+		if (resetBall) {
+			world.setBallList(createBallList());
+		}
 
-	public void restart() {
-		world.setBallList(createBallList());
-		isFrozen = false;
+		mThread = new Thread(this);
+		mThread.start();
 	}
 }
