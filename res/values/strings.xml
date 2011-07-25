@@ -8,4 +8,11 @@
 	<string name="highscore">高分</string>
 	<string name="anonymous">匿名</string>
 	<string name="tips_high_score">恭喜您创造了一个高分，请输入大名</string>
+	<string name="info_email">邮件</string>
+	<string name="info_author">作者</string>
+	<string name="info_weibo">微博</string>
+	<string name="info_game">本游戏为作者业余时间所开发，采用Box2d物理引擎所使用的算法模拟小球之间的碰撞和堆叠。关于项目的详细信息，请访问：
+	</string>
+	<string name="info_project_home">code.google.com/p/android-ball-world
+	</string>
 </resources>
