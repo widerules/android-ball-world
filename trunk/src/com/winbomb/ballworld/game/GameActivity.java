@@ -87,7 +87,7 @@ public class GameActivity extends Activity {
 	@Override
 	public void onPause() {
 		super.onPause();
-		this.mGameView.pause();
+		pauseGame();
 
 		if (isFinishing()) {
 			writeHighScoreToFile();
@@ -209,10 +209,12 @@ public class GameActivity extends Activity {
 
 	private void showAboutInfo() {
 
+		final View aboutText = mInflater.inflate(R.layout.alert_dialog_about_info, null);
+
 		Dialog aboutInfo = new AlertDialog.Builder(this)
 				.setIcon(android.R.drawable.btn_star)
 				.setTitle(R.string.about)
-				.setMessage("message")
+				.setView(aboutText)
 				.setPositiveButton("确定", new ResumeGameListener())
 				.create();
 
