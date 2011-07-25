@@ -33,7 +33,7 @@ public class GameView extends SurfaceView implements Runnable {
 	private Handler mHandler;
 	private Rect dstRect;
 
-	private static final int NUMBER_OF_BALLS = 4;
+	private static final int NUMBER_OF_BALLS = 24;
 	volatile boolean running = true;
 
 	/** 游戏上次暂停时间 */
