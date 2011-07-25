@@ -70,13 +70,13 @@ public class WorldRender {
 		if (ratioY >= ratioX) {
 			scale = ratioX;
 			renderWidth = canvasWidth;
-			renderHeight = canvasWidth * scale;
+			renderHeight = this.worldHeight * scale;
 			offsetX = 0;
 			offsetY = (canvasHeight - renderHeight) / 2;
 		} else {
 			scale = ratioY;
 			renderHeight = canvasHeight;
-			renderWidth = canvasHeight * scale;
+			renderWidth = this.worldWidth * scale;
 			offsetY = 0;
 			offsetX = (canvasWidth - renderWidth) / 2;
 		}
