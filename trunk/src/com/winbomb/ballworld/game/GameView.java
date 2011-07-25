@@ -34,7 +34,7 @@ public class GameView extends SurfaceView implements Runnable {
 	private Rect dstRect;
 
 	private static final int NUMBER_OF_BALLS = 4;
-	boolean running = true;
+	volatile boolean running = true;
 
 	/** 游戏上次暂停时间 */
 	private long lastPause;
@@ -117,11 +117,11 @@ public class GameView extends SurfaceView implements Runnable {
 
 		while (running) {
 
-			Canvas canvas = mHolder.lockCanvas();
-
-			if (canvas == null) {
-				break;
+			if (!mHolder.getSurface().isValid()) {
+				continue;
 			}
+
+			Canvas canvas = mHolder.lockCanvas();
 
 			float accX = -mAccHandler.getAccelX() * 98 * 40;
 			float accY = mAccHandler.getAccelY() * 98 * 40;
