@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="fill_parent"
+	android:orientation="vertical" android:paddingLeft="15dip"
+	android:paddingRight="15dip">
+	<TextView android:text="@string/info_game" android:id="@+id/textView2"
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:textSize="18sp"></TextView>
+	<TextView android:text="@string/info_project_home" android:id="@+id/textView7"
+		android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
+	<LinearLayout android:layout_height="wrap_content"
+		android:id="@+id/linearLayout2" android:layout_width="fill_parent">
+		<TextView android:text="@string/info_author" android:id="@+id/textView3"
+			style="@style/AboutTitle" android:layout_height="wrap_content"></TextView>
+		<TextView android:text="winbomb" android:id="@+id/textView5"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
+	</LinearLayout>
+	<LinearLayout android:layout_height="wrap_content"
+		android:id="@+id/linearLayout1" android:layout_width="fill_parent">
+		<TextView android:text="@string/info_email" android:id="@+id/textView1"
+			style="@style/AboutTitle" android:layout_height="wrap_content"></TextView>
+		<TextView android:text="li.wenbo@whu.edu.cn" android:id="@+id/textView4"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
+	</LinearLayout>
+	<LinearLayout android:layout_height="wrap_content"
+		android:id="@+id/linearLayout2" android:layout_width="fill_parent">
+		<TextView android:text="@string/info_weibo" android:id="@+id/textView3"
+			style="@style/AboutTitle" android:layout_height="wrap_content"></TextView>
+		<TextView android:text="http://weibo.com/winbomb" android:id="@+id/textView6"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
+	</LinearLayout>
+</LinearLayout>
