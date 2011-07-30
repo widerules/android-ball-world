@@ -1,5 +1,7 @@
 package com.winbomb.ballworld;
 
+import android.graphics.Bitmap;
+
 import com.winbomb.ballworld.common.Vec2;
 
 public class Hole {
@@ -15,6 +17,8 @@ public class Hole {
 
 	/** 球洞的半径 */
 	private float radius = MIDDLE_HOLE;
+
+	private Bitmap texture;
 
 	public Hole(float x, float y) {
 		this.pos = new Vec2(x, y);
@@ -56,5 +60,13 @@ public class Hole {
 
 	public float getY() {
 		return this.pos.y;
+	}
+
+	public Bitmap getTexture() {
+		return texture;
+	}
+
+	public void setTexture(Bitmap texture) {
+		this.texture = texture;
 	}
 }
