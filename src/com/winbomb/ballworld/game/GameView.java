@@ -10,6 +10,7 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -22,7 +23,7 @@ import com.winbomb.ballworld.input.AccHandler;
 
 public class GameView extends SurfaceView implements Runnable {
 
-	private static final float DELAY = 0.002f;
+	private static final float DELAY = 0.005f;
 
 	private SurfaceHolder mHolder;
 	private AccHandler mAccHandler;
@@ -38,8 +39,11 @@ public class GameView extends SurfaceView implements Runnable {
 
 	/** 游戏上次暂停时间 */
 	private long lastPause;
-	/** 游戏所花时间 */
+
+	/** 游戏所花时间(单位：毫秒） */
 	private long costTime;
+
+	FPSCounter fpsCounter;
 
 	public GameView(Context context) {
 		super(context);
@@ -51,6 +55,7 @@ public class GameView extends SurfaceView implements Runnable {
 		// 初始化Ball world
 		world = new BallWorld(Setting.WORLD_WIDTH, Setting.WORLD_HEIGHT);
 		world.setBallList(createBallList());
+		//world.setBallList(createTestBallList());
 		world.setHoles(createHoles());
 
 		// 初始化WorldRender
@@ -110,12 +115,39 @@ public class GameView extends SurfaceView implements Runnable {
 		return balls;
 	}
 
+	private List<Ball> createTestBallList() {
+
+		List<Ball> balls = new ArrayList<Ball>();
+		float r = Ball.MIDDLE_BALL_RADIUS;
+
+		float x0 = r;
+		float y0 = 480 - r;
+		for (int i = 0; i < 1; i++) {
+			float y = y0 - 2 * i * r;
+
+			Ball ball = new Ball(r);
+			ball.setPosition(x0, y);
+
+			balls.add(ball);
+		}
+
+		return balls;
+	}
+
 	@Override
 	public void run() {
-
 		lastPause = System.currentTimeMillis();
+		long startTime = System.nanoTime();
 
 		while (running) {
+
+			float deltaTime = (System.nanoTime() - startTime) / 1000000000.0f;
+			startTime = System.nanoTime();
+
+			deltaTime = (deltaTime < Setting.MAX_DELTA_TIME) ? deltaTime : Setting.MAX_DELTA_TIME;
+
+			costTime += System.currentTimeMillis() - lastPause;
+			lastPause = System.currentTimeMillis();
 
 			if (!mHolder.getSurface().isValid()) {
 				continue;
@@ -123,13 +155,13 @@ public class GameView extends SurfaceView implements Runnable {
 
 			Canvas canvas = mHolder.lockCanvas();
 
-			float accX = -mAccHandler.getAccelX() * 98 * 40;
-			float accY = mAccHandler.getAccelY() * 98 * 40;
+			float accX = -mAccHandler.getAccelX();
+			float accY = mAccHandler.getAccelY();
 
 			world.setGravity(accX, accY);
-			world.step(DELAY);
+			world.step(deltaTime);
 
-			Bitmap worldFrame = worldRender.drawWorldFrame();
+			Bitmap worldFrame = worldRender.drawWorldFrame(costTime);
 			canvas.drawBitmap(worldFrame, null, dstRect, null);
 
 			mHolder.unlockCanvasAndPost(canvas);
@@ -139,7 +171,6 @@ public class GameView extends SurfaceView implements Runnable {
 				Message msg = mHandler.obtainMessage();
 
 				Bundle data = new Bundle();
-				costTime += System.currentTimeMillis() - lastPause;
 				data.putLong("TIME", costTime);
 				msg.setData(data);
 
@@ -152,7 +183,6 @@ public class GameView extends SurfaceView implements Runnable {
 
 	public void pause() {
 		running = false;
-		costTime += System.currentTimeMillis() - lastPause;
 		while (true) {
 			try {
 				mThread.join();
@@ -167,6 +197,7 @@ public class GameView extends SurfaceView implements Runnable {
 		running = true;
 		lastPause = System.currentTimeMillis();
 		if (resetBall) {
+			costTime = 0;
 			world.setBallList(createBallList());
 		}
 

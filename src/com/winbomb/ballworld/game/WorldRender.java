@@ -23,6 +23,7 @@ public class WorldRender {
 	private BallWorld world;
 
 	private Paint holePaint;
+	private Paint timerPaint;
 
 	private Canvas canvas;
 	private Bitmap frameBuffer;
@@ -87,11 +88,18 @@ public class WorldRender {
 		holePaint = new Paint();
 		holePaint.setStyle(Style.FILL);
 		holePaint.setColor(Color.BLACK);
+
+		timerPaint = new Paint();
+		timerPaint.setStyle(Style.FILL);
+		timerPaint.setTextSize(18);
+		timerPaint.setColor(Color.GREEN);
 	}
 
-	public Bitmap drawWorldFrame() {
+	public Bitmap drawWorldFrame(long costTime) {
 
 		drawBackground();
+
+		drawTimeCost(costTime);
 
 		// draw holes
 		if (world.getHoles() != null) {
@@ -118,6 +126,11 @@ public class WorldRender {
 		canvas.drawBitmap(Resources.imgBg, 0, 0, null);
 	}
 
+	private void drawTimeCost(long timeCost) {
+		float t = timeCost / 1000f;
+		canvas.drawText(String.valueOf(t), renderWidth / 2, 15, timerPaint);
+	}
+
 	private void drawBall(Ball ball) {
 		float x = (ball.getX() - ball.getRadius()) * scale;
 		float y = (ball.getY() - ball.getRadius()) * scale;
@@ -133,10 +146,17 @@ public class WorldRender {
 	}
 
 	private void drawHole(Hole hole) {
-		float cx = hole.getX() * scale;
-		float cy = hole.getY() * scale;
-		float cr = hole.getRadius() * scale;
-		canvas.drawCircle(cx, cy, cr, holePaint);
+		float x = (hole.getX() - hole.getRadius()) * scale;
+		float y = (hole.getY() - hole.getRadius()) * scale;
+
+		if (hole.getTexture() == null) {
+			int dstSize = (int) (hole.getRadius() * 2 * scale);
+			Bitmap texture = Bitmap.createScaledBitmap(Resources.imgHole, dstSize, dstSize, false);
+
+			hole.setTexture(texture);
+		}
+
+		canvas.drawBitmap(hole.getTexture(), x, y, null);
 	}
 
 	public float getOffsetX() {
