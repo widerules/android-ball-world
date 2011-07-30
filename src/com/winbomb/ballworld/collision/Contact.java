@@ -75,7 +75,7 @@ public class Contact {
 	}
 
 	public void prepare() {
-		bias = -60 * Math.min(0.0f, separation + Setting.ALLOW_PENETRATION);
+		bias = -Setting.BIAS_FACTOR * Math.min(0.0f, separation + Setting.ALLOW_PENETRATION);
 		restitution = 0.3f;
 
 		float dv = getNormalImpulse();
