@@ -1,5 +1,7 @@
 package com.winbomb.ballworld.input;
 
+import com.winbomb.ballworld.Setting;
+
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -9,7 +11,6 @@ import android.hardware.SensorManager;
 public class AccHandler implements SensorEventListener {
 	float accelX;
 	float accelY;
-	float accelZ;
 
 	public AccHandler(Context context) {
 		SensorManager manager = (SensorManager) context
@@ -31,18 +32,13 @@ public class AccHandler implements SensorEventListener {
 	public void onSensorChanged(SensorEvent event) {
 		accelX = event.values[0];
 		accelY = event.values[1];
-		accelZ = event.values[2];
 	}
 
 	public float getAccelX() {
-		return accelX;
+		return accelX * Setting.GRAVITY_RATIO;
 	}
 
 	public float getAccelY() {
-		return accelY;
-	}
-
-	public float getAccelZ() {
-		return accelZ;
+		return accelY * Setting.GRAVITY_RATIO;
 	}
 }
