@@ -153,13 +153,13 @@ public class WorldRender {
 
 		float t = timeCost / 1000f;
 
-		canvas.drawText(String.valueOf(t), 15 * scale, 16 * scale, timerPaint);
-		canvas.drawText(ballInHole + " / " + holeNum, renderWidth / 2 + 75 * scale, 16 * scale, timerPaint);
+		canvas.drawText(String.valueOf(t), 15 * scale, 20 * scale, timerPaint);
+		canvas.drawText(ballInHole + " / " + holeNum, renderWidth / 2 + 80 * scale, 20 * scale, timerPaint);
 	}
 
 	private void drawBall(Ball ball) {
-		float x = (ball.getX() - ball.getRadius() + 10) * scale;
-		float y = (ball.getY() - ball.getRadius() + 30) * scale;
+		float x = (ball.getX() - ball.getRadius() + MARGIN_LEFT) * scale;
+		float y = (ball.getY() - ball.getRadius() + MARGIN_TOP) * scale;
 
 		if (ball.getTexture() == null) {
 			int dstSize = (int) (ball.getRadius() * 2 * scale);
@@ -172,8 +172,8 @@ public class WorldRender {
 	}
 
 	private void drawHole(Hole hole) {
-		float x = (hole.getX() - hole.getRadius() + 10) * scale;
-		float y = (hole.getY() - hole.getRadius() + 30) * scale;
+		float x = (hole.getX() - hole.getRadius() + MARGIN_LEFT) * scale;
+		float y = (hole.getY() - hole.getRadius() + MARGIN_TOP) * scale;
 
 		if (hole.getTexture() == null) {
 			int dstSize = (int) (hole.getRadius() * 2 * scale);
