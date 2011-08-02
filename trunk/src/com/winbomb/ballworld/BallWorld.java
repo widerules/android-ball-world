@@ -2,6 +2,7 @@ package com.winbomb.ballworld;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import com.winbomb.ballworld.collision.Contact;
 import com.winbomb.ballworld.collision.Wall;
@@ -39,6 +40,9 @@ public class BallWorld {
 	/** 冲突列表 */
 	private List<Contact> contacts;
 
+	/** 随机因子 */
+	private Random random;
+
 	public BallWorld() {
 		this.iterationNum = 10;
 		this.contacts = new ArrayList<Contact>();
@@ -46,6 +50,7 @@ public class BallWorld {
 		this.gravity = new Vec2();
 		this.worldWidth = 0f;
 		this.worldHeight = 0f;
+		this.random = new Random();
 	}
 
 	public BallWorld(float width, float height) {
@@ -135,7 +140,15 @@ public class BallWorld {
 					Vec2 vec = gravity.mul(1);
 					vec.addLocal(ball.getVelocity());
 
-					if (Vec2.length(vec) < Setting.ESCAPE_VELOCITY) {
+					/**
+					 * * randomFactor用来模拟随机情况，不然会出现当屏幕倾斜到一定角度之后
+					 * 
+					 * 所有小球同时从洞中滚落的情况。虽然在理想状况下应该是这样的，但这在
+					 * 
+					 * 游戏中看起来很别扭。
+					 */
+					float randFactor = random.nextFloat() * 0.7f + 0.3f;
+					if (Vec2.length(vec) < Setting.ESCAPE_VELOCITY * randFactor) {
 						ball.clearVelocity();
 					}
 
