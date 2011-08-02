@@ -4,9 +4,9 @@
 	<TextView android:text="10" android:id="@+id/txtNo"
 		android:layout_width="30dip" android:layout_height="wrap_content"></TextView>
 	<TextView android:text="999" android:id="@+id/txtTimeCost"
-		android:layout_width="50dip" android:layout_height="wrap_content"></TextView>
+		android:layout_width="70dip" android:layout_height="wrap_content"></TextView>
 	<TextView android:text="Anonymous" android:id="@+id/txtPlayer"
-		android:layout_width="100dip" android:layout_height="wrap_content"></TextView>
+		android:layout_width="70dip" android:layout_height="wrap_content"></TextView>
 	<TextView android:text="2011-07-17 13:30" android:id="@+id/txtDate"
 		android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
 </LinearLayout>
