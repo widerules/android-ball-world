@@ -134,6 +134,8 @@ public class GameActivity extends Activity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 
+		bResume = false;
+
 		switch (item.getItemId()) {
 		case R.id.resume:
 			resumeGame();
@@ -145,11 +147,9 @@ public class GameActivity extends Activity {
 			quitGame();
 			return true;
 		case R.id.about:
-			bResume = false;
 			showAboutInfo();
 			return true;
 		case R.id.highscore:
-			bResume = false;
 			showHighScores();
 			return true;
 		default:

@@ -20,13 +20,20 @@ import com.winbomb.ballworld.Hole;
  */
 public class WorldRender {
 
-	private BallWorld world;
+	private static final float MARGIN_LEFT = 10f;
+	private static final float MARGIN_RIGHT = 10f;
+	private static final float MARGIN_TOP = 30f;
+	private static final float MARGIN_BOTTOM = 10f;
 
+	private BallWorld world;
 	private Paint holePaint;
 	private Paint timerPaint;
 
 	private Canvas canvas;
 	private Bitmap frameBuffer;
+
+	private int holeNum;
+	private int ballInHole;
 
 	/**
 	 * 游戏的分辨率为320*480，对于不同尺寸的屏幕，需要根据屏幕分辨率的
@@ -42,6 +49,10 @@ public class WorldRender {
 	private float worldWidth;
 	/** Ball World 的高度 */
 	private float worldHeight;
+	/** Box的宽度 */
+	private float boxWidth;
+	/** Box的高度 */
+	private float boxHeight;
 	/** 画布的宽度 */
 	private float canvasWidth;
 	/** 画布的高度 */
@@ -64,20 +75,22 @@ public class WorldRender {
 		this.canvasHeight = canvasHeight;
 		this.worldWidth = world.getWorldWidth();
 		this.worldHeight = world.getWorldHeight();
+		this.boxWidth = this.worldWidth + MARGIN_LEFT + MARGIN_RIGHT;
+		this.boxHeight = this.worldHeight + MARGIN_TOP + MARGIN_BOTTOM;
 
-		float ratioX = (float) canvasWidth / worldWidth;
-		float ratioY = (float) canvasHeight / worldHeight;
+		float ratioX = (float) canvasWidth / boxWidth;
+		float ratioY = (float) canvasHeight / boxHeight;
 
 		if (ratioY >= ratioX) {
 			scale = ratioX;
 			renderWidth = canvasWidth;
-			renderHeight = this.worldHeight * scale;
+			renderHeight = this.boxHeight * scale;
 			offsetX = 0;
 			offsetY = (canvasHeight - renderHeight) / 2;
 		} else {
 			scale = ratioY;
 			renderHeight = canvasHeight;
-			renderWidth = this.worldWidth * scale;
+			renderWidth = this.boxWidth * scale;
 			offsetY = 0;
 			offsetX = (canvasWidth - renderWidth) / 2;
 		}
@@ -91,18 +104,22 @@ public class WorldRender {
 
 		timerPaint = new Paint();
 		timerPaint.setStyle(Style.FILL);
-		timerPaint.setTextSize(18);
-		timerPaint.setColor(Color.GREEN);
+		timerPaint.setTextSize(24);
+		timerPaint.setColor(Color.BLUE);
+		timerPaint.setTextScaleX(scale);
 	}
 
 	public Bitmap drawWorldFrame(long costTime) {
 
-		drawBackground();
+		holeNum = 0;
+		ballInHole = 0;
 
-		drawTimeCost(costTime);
+		drawBackground();
 
 		// draw holes
 		if (world.getHoles() != null) {
+
+			holeNum = world.getHoles().length;
 			for (Hole hole : world.getHoles()) {
 				drawHole(hole);
 			}
@@ -111,9 +128,14 @@ public class WorldRender {
 		// draw balls
 		if (world.getBallList() != null) {
 			for (Ball ball : world.getBallList()) {
+				if (ball.isInHole()) {
+					ballInHole++;
+				}
 				drawBall(ball);
 			}
 		}
+
+		drawGameInfo(costTime);
 
 		return frameBuffer;
 	}
@@ -123,17 +145,21 @@ public class WorldRender {
 		canvas.drawColor(Color.WHITE);
 
 		// draw background
-		canvas.drawBitmap(Resources.imgBg, 0, 0, null);
+		Rect dst = new Rect(0, 0, (int) renderWidth, (int) renderHeight);
+		canvas.drawBitmap(Resources.imgBg, null, dst, null);
 	}
 
-	private void drawTimeCost(long timeCost) {
+	private void drawGameInfo(long timeCost) {
+
 		float t = timeCost / 1000f;
-		canvas.drawText(String.valueOf(t), renderWidth / 2, 15, timerPaint);
+
+		canvas.drawText(String.valueOf(t), 15 * scale, 16 * scale, timerPaint);
+		canvas.drawText(ballInHole + " / " + holeNum, renderWidth / 2 + 75 * scale, 16 * scale, timerPaint);
 	}
 
 	private void drawBall(Ball ball) {
-		float x = (ball.getX() - ball.getRadius()) * scale;
-		float y = (ball.getY() - ball.getRadius()) * scale;
+		float x = (ball.getX() - ball.getRadius() + 10) * scale;
+		float y = (ball.getY() - ball.getRadius() + 30) * scale;
 
 		if (ball.getTexture() == null) {
 			int dstSize = (int) (ball.getRadius() * 2 * scale);
@@ -146,8 +172,8 @@ public class WorldRender {
 	}
 
 	private void drawHole(Hole hole) {
-		float x = (hole.getX() - hole.getRadius()) * scale;
-		float y = (hole.getY() - hole.getRadius()) * scale;
+		float x = (hole.getX() - hole.getRadius() + 10) * scale;
+		float y = (hole.getY() - hole.getRadius() + 30) * scale;
 
 		if (hole.getTexture() == null) {
 			int dstSize = (int) (hole.getRadius() * 2 * scale);

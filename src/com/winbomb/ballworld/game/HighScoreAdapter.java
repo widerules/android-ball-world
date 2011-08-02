@@ -1,5 +1,7 @@
 package com.winbomb.ballworld.game;
 
+import java.text.SimpleDateFormat;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,9 +16,15 @@ public class HighScoreAdapter extends BaseAdapter {
 	private HighScore[] highScores;
 	private LayoutInflater mInflater;
 
+	private String dateFormat = "yyyy/MM/dd";
+	private SimpleDateFormat sdf;
+
 	public HighScoreAdapter(Context context, HighScore[] scores) {
 		this.highScores = scores;
 		mInflater = LayoutInflater.from(context);
+
+		sdf = new SimpleDateFormat(dateFormat);
+
 	}
 
 	@Override
@@ -69,9 +77,11 @@ public class HighScoreAdapter extends BaseAdapter {
 		}
 
 		holder.txtNo.setText(String.valueOf(position + 1));
-		holder.txtTimeCost.setText(String.valueOf((score.getTimeCost() / 1000)) + "s");
+		holder.txtTimeCost.setText(String.valueOf((score.getTimeCost() / 1000f)) + "s");
 		holder.txtPlayer.setText(score.getPlayer());
-		holder.txtDate.setText("07-11 22:45");
+
+		String dateStr = sdf.format(score.getPlayTime());
+		holder.txtDate.setText(dateStr);
 
 		return convertView;
 	}
