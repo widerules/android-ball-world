@@ -30,10 +30,10 @@ public class BallWorld {
 	/** 洞的列表 */
 	private Hole[] holes;
 
-	/** 宽度（单位：厘米） */
+	/** 宽度 */
 	private float worldWidth;
 
-	/** 高度 （单位：厘米） */
+	/** 高度 */
 	private float worldHeight;
 
 	/** 冲突列表 */
@@ -135,7 +135,7 @@ public class BallWorld {
 					Vec2 vec = gravity.mul(1);
 					vec.addLocal(ball.getVelocity());
 
-					if (Vec2.length(vec) < 30 * 40f) {
+					if (Vec2.length(vec) < Setting.ESCAPE_VELOCITY) {
 						ball.clearVelocity();
 					}
 
