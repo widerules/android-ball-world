@@ -7,7 +7,6 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -35,11 +34,6 @@ public class GameView extends SurfaceView implements Runnable {
 
 	/** 游戏所花时间(单位：毫秒） */
 	private long costTime;
-
-	FPSCounter fpsCounter;
-
-	private float totalTime;
-	private long frames;
 
 	public GameView(Context context) {
 		super(context);
@@ -72,18 +66,12 @@ public class GameView extends SurfaceView implements Runnable {
 		lastPause = System.currentTimeMillis();
 		long startTime = System.nanoTime();
 
-		totalTime = 0;
-		frames = 0;
-
 		while (running) {
 
 			float deltaTime = (System.nanoTime() - startTime) / 1000000000.0f;
 			startTime = System.nanoTime();
 
 			deltaTime = (deltaTime < Setting.MAX_DELTA_TIME) ? deltaTime : Setting.MAX_DELTA_TIME;
-
-			frames++;
-			totalTime += deltaTime;
 
 			costTime += System.currentTimeMillis() - lastPause;
 			lastPause = System.currentTimeMillis();
@@ -96,6 +84,9 @@ public class GameView extends SurfaceView implements Runnable {
 
 			float accX = -mAccHandler.getAccelX();
 			float accY = mAccHandler.getAccelY();
+
+			// float accX = (float) Math.random() * 20f - 10f;
+			// float accY = (float) Math.random() * 20f - 10f;
 
 			world.setGravity(accX, accY);
 			world.step(deltaTime);
@@ -121,8 +112,6 @@ public class GameView extends SurfaceView implements Runnable {
 	}
 
 	public void pause() {
-
-		Log.d("GameView", "Time Per Frame: " + totalTime / frames);
 
 		running = false;
 		while (true) {
