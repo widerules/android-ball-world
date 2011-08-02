@@ -1,8 +1,5 @@
 package com.winbomb.ballworld.game;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -14,27 +11,23 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-import com.winbomb.ballworld.Ball;
 import com.winbomb.ballworld.BallWorld;
-import com.winbomb.ballworld.Hole;
 import com.winbomb.ballworld.Setting;
-import com.winbomb.ballworld.common.Vec2;
+import com.winbomb.ballworld.game.impl.StandardCreator;
 import com.winbomb.ballworld.input.AccHandler;
 
 public class GameView extends SurfaceView implements Runnable {
-
-	private static final float DELAY = 0.005f;
 
 	private SurfaceHolder mHolder;
 	private AccHandler mAccHandler;
 	private Thread mThread = null;
 
 	private BallWorld world;
+	private WorldCreator creator;
 	private WorldRender worldRender;
 	private Handler mHandler;
 	private Rect dstRect;
 
-	private static final int NUMBER_OF_BALLS = 24;
 	volatile boolean running = true;
 
 	/** 游戏上次暂停时间 */
@@ -45,6 +38,9 @@ public class GameView extends SurfaceView implements Runnable {
 
 	FPSCounter fpsCounter;
 
+	private float totalTime;
+	private long frames;
+
 	public GameView(Context context) {
 		super(context);
 		this.setKeepScreenOn(true);
@@ -54,9 +50,10 @@ public class GameView extends SurfaceView implements Runnable {
 
 		// 初始化Ball world
 		world = new BallWorld(Setting.WORLD_WIDTH, Setting.WORLD_HEIGHT);
-		world.setBallList(createBallList());
-		//world.setBallList(createTestBallList());
-		world.setHoles(createHoles());
+
+		creator = new StandardCreator(world);
+		world.setBallList(creator.createBalls());
+		world.setHoles(creator.createHoles());
 
 		// 初始化WorldRender
 		worldRender = new WorldRender(world, Cocobox.SCREEN_WIDTH, Cocobox.SCREEN_HEIGHT);
@@ -70,74 +67,13 @@ public class GameView extends SurfaceView implements Runnable {
 		mHandler = handler;
 	}
 
-	private Hole[] createHoles() {
-
-		Hole[] holes = new Hole[4 * 6];
-		for (int i = 0; i < 6; i++) {
-			for (int j = 0; j < 4; j++) {
-				float x = 40 + 80 * j;
-				float y = 40 + 80 * i;
-
-				holes[4 * i + j] = new Hole(x, y);
-			}
-		}
-
-		return holes;
-	}
-
-	private List<Ball> createBallList() {
-
-		List<Ball> balls = new ArrayList<Ball>();
-		float r = Ball.MIDDLE_BALL_RADIUS;
-
-		int ballNum = 0;
-		while (ballNum < NUMBER_OF_BALLS) {
-			int x = (int) (Math.random() * (world.getWorldWidth() - r * 2) + r);
-			int y = (int) (Math.random() * (world.getWorldHeight() - r * 2) + r);
-
-			Ball ball = new Ball(r);
-			ball.setPosition(new Vec2(x, y));
-			ball.setVelocity(new Vec2(0.f, 0.f));
-
-			boolean bCollide = false;
-			for (Ball destBall : balls) {
-				if (ball.isCollideBall(destBall)) {
-					bCollide = true;
-				}
-			}
-
-			if (!bCollide) {
-				balls.add(ball);
-				ballNum++;
-			}
-		}
-
-		return balls;
-	}
-
-	private List<Ball> createTestBallList() {
-
-		List<Ball> balls = new ArrayList<Ball>();
-		float r = Ball.MIDDLE_BALL_RADIUS;
-
-		float x0 = r;
-		float y0 = 480 - r;
-		for (int i = 0; i < 1; i++) {
-			float y = y0 - 2 * i * r;
-
-			Ball ball = new Ball(r);
-			ball.setPosition(x0, y);
-
-			balls.add(ball);
-		}
-
-		return balls;
-	}
-
 	@Override
 	public void run() {
 		lastPause = System.currentTimeMillis();
 		long startTime = System.nanoTime();
+
+		totalTime = 0;
+		frames = 0;
 
 		while (running) {
 
@@ -145,6 +81,9 @@ public class GameView extends SurfaceView implements Runnable {
 			startTime = System.nanoTime();
 
 			deltaTime = (deltaTime < Setting.MAX_DELTA_TIME) ? deltaTime : Setting.MAX_DELTA_TIME;
+
+			frames++;
+			totalTime += deltaTime;
 
 			costTime += System.currentTimeMillis() - lastPause;
 			lastPause = System.currentTimeMillis();
@@ -182,6 +121,9 @@ public class GameView extends SurfaceView implements Runnable {
 	}
 
 	public void pause() {
+
+		Log.d("GameView", "Time Per Frame: " + totalTime / frames);
+
 		running = false;
 		while (true) {
 			try {
@@ -198,7 +140,7 @@ public class GameView extends SurfaceView implements Runnable {
 		lastPause = System.currentTimeMillis();
 		if (resetBall) {
 			costTime = 0;
-			world.setBallList(createBallList());
+			world.setBallList(creator.createBalls());
 		}
 
 		mThread = new Thread(this);
