@@ -147,7 +147,7 @@ public class BallWorld {
 					 * 
 					 * 游戏中看起来很别扭。
 					 */
-					float randFactor = random.nextFloat() * 0.7f + 0.3f;
+					float randFactor = random.nextFloat() * 0.5f + 0.5f;
 					if (Vec2.length(vec) < Setting.ESCAPE_VELOCITY * randFactor) {
 						ball.clearVelocity();
 					}
